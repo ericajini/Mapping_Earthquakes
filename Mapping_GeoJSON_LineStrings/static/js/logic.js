@@ -62,35 +62,38 @@ let dark = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{
     accessToken: API_KEY
 });
 
+
+
 let baseMaps = {
-    Street: streets,
-    Dark: dark,
-    Light: light
+    "Day Navigation": light,
+    "Night Navigation": dark,
+    "Streets": streets,
 };
 
 
   // Create the map object with center, zoom level and default layer.
 let map = L.map('mapid', {
-    center: [44.0, -80.0],
-    zoom: 2,
-    layers: [streets]
+    center: [43.7, -79.3],
+    zoom: 6,
+    layers: [dark]
 })
 
 L.control.layers(baseMaps).addTo(map);
 // Accessing the Toronto airline routes GeoJSON URL.
-let torontoData = "https://raw.githubusercontent.com/ericajini/Mapping_Earthquakes/main/torontoRoutes.json";
+let torontoData = "https://raw.githubusercontent.com/ericajini/Mapping_Earthquakes/main/Mapping_GeoJSON_LineStrings/torontoRoutes.json";
 
 
-//grabbing geojson data
+let lineStyle = {
+    color: "#ffffa1",
+    weight: 2
+  }
 
-d3.json(airportData).then(function(data) {
-    console.log(data);
-    // creating geojson layer w retrieved data
+// Grabbing our GeoJSON data.
+d3.json(torontoData).then(function(data) {
     L.geoJson(data,{
-        onEachFeature: function(feature, layer) {
-            console.log(layer);
-            layer.bindPopup("<h3>" + "Airport Code: " + feature.properties.faa +
-            "</h3><hr><p>" + "Airport Name:" + " " + feature.properties.name + "</p>");
-        }    
+        style : lineStyle,
+        onEachFeature : function(feature,layer) {
+        layer.bindPopup("<h3> Airline : "+ feature.properties.airline + "</h3> <hr> <h3> Destination:" +feature.properties.dst +"</h3>");
+    }
     }).addTo(map);
     });
